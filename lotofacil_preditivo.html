@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lotofácil com Fé</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#c9a84c;--gold-light:#f0d080;--green:#1a5c36;--green-light:#e8f5ee;
+  --purple:#5b2d8e;--purple-light:#f0eafa;--orange:#c0440c;--orange-light:#fff3ed;
+  --bg:#faf9f6;--surface:#ffffff;--border:#e8e4dc;--text:#1a1a18;--muted:#888880;
+  --radius:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:1.5rem 1rem}
+.app{max-width:780px;margin:0 auto}
+h1{font-family:'Playfair Display',serif;font-size:26px;color:var(--text);margin-bottom:2px;letter-spacing:-.3px}
+.sub{font-size:13px;color:var(--muted);margin-bottom:1.5rem}
+/* Tabs */
+.tabs{display:flex;gap:6px;margin-bottom:1.5rem;flex-wrap:wrap}
+.tab{padding:8px 18px;border-radius:var(--radius);border:1.5px solid var(--border);background:var(--surface);cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);font-family:'DM Sans',sans-serif;transition:all .2s}
+.tab:hover{border-color:var(--green);color:var(--green)}
+.tab.active{background:var(--green);color:#fff;border-color:var(--green);font-weight:600}
+.sec{display:none}.sec.active{display:block}
+/* Cards */
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:1.2rem 1.4rem;margin-bottom:1rem}
+.ct{font-family:'Playfair Display',serif;font-size:16px;color:var(--text);margin-bottom:5px}
+.csub{font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6}
+/* Métricas */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:1rem}
+.metric{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius);padding:10px 12px}
+.ml{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.mv{font-size:22px;font-weight:700;color:var(--text)}
+.msub{font-size:10px;color:var(--muted);margin-top:1px}
+/* Bolas */
+.ball{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;border:2px solid transparent;flex-shrink:0}
+.ball.click{cursor:pointer;transition:transform .15s}.ball.click:hover{transform:scale(1.12)}
+.bg{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.b-hot{background:var(--orange-light);color:var(--orange);border-color:#f0825a}
+.b-due{background:var(--purple-light);color:var(--purple);border-color:#a07ad0}
+.b-god{background:linear-gradient(135deg,#fffbe6,#fef3b0);color:#7a5000;border-color:var(--gold);box-shadow:0 0 10px rgba(201,168,76,.5)}
+.b-sel{background:var(--green);color:#fff;border-color:var(--green)}
+.b-neu{background:#f0f0ec;color:#666;border-color:#ddd}
+.b-cold{background:#e8f0fd;color:#1a3c7a;border-color:#90b0e8}
+.b-warn{background:#fde8e8;color:#6e1a1a;border-color:#e08080}
+.b-sm{width:34px;height:34px;font-size:12px}
+.b-xs{width:28px;height:28px;font-size:10px}
+/* Animação de revelação */
+@keyframes pop{0%{opacity:0;transform:scale(.4) rotate(-15deg)}65%{transform:scale(1.18) rotate(3deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes godglow{0%,100%{box-shadow:0 0 8px rgba(201,168,76,.4)}50%{box-shadow:0 0 22px rgba(201,168,76,.9),0 0 40px rgba(201,168,76,.3)}}
+.b-god{animation:godglow 2.4s ease-in-out infinite}
+.reveal{animation:pop .45s ease-out forwards;opacity:0}
+/* Botões */
+.btn{padding:9px 20px;border-radius:var(--radius);border:1.5px solid var(--border);background:var(--surface);cursor:pointer;font-size:13px;font-weight:500;color:var(--text);font-family:'DM Sans',sans-serif;transition:all .18s}
+.btn:hover{background:var(--bg)}
+.btn.pri{background:var(--green);color:#fff;border-color:var(--green);font-weight:600}
+.btn.pri:hover{background:#144d2c}
+.btn.god{background:linear-gradient(135deg,var(--gold),#a8762a);color:#fff;border-color:#a8762a;font-weight:700;font-size:15px;letter-spacing:.2px;padding:12px 28px}
+.btn.god:hover{background:linear-gradient(135deg,#b8932c,#8a601a)}
+.btn.del{color:#a03030;border-color:#e0aaaa;font-size:12px;padding:5px 12px}
+.btn.del:hover{background:#fde8e8}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+/* Inputs */
+.ir{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.ir label{font-size:13px;color:var(--muted);min-width:160px;font-weight:500}
+.vd{font-size:15px;font-weight:700;min-width:80px;color:var(--green)}
+input[type=range]{flex:1;min-width:120px;accent-color:var(--green)}
+/* Tags e badges */
+.tag{font-size:11px;padding:3px 9px;border-radius:20px;background:var(--bg);color:var(--muted);border:1px solid var(--border)}
+.tag-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.badge{font-size:11px;padding:3px 9px;border-radius:6px;font-weight:600}
+.bg-g{background:#e4f5ea;color:#1a5c27}
+.bg-a{background:var(--orange-light);color:var(--orange)}
+.bg-p{background:var(--purple-light);color:var(--purple)}
+.bg-r{background:#fde8e8;color:#6e1a1a}
+.bg-y{background:#fffbe6;color:#7a5000;border:1px solid var(--gold)}
+/* Barras */
+.bar-bg{flex:1;background:#eeeeea;border-radius:3px;height:6px}
+.bar-fill{height:6px;border-radius:3px}
+.score-bar{height:6px;border-radius:3px;background:#eeeeea;overflow:hidden;margin-top:6px}
+.score-fill{height:100%;border-radius:3px}
+.divider{border:none;border-top:1.5px solid var(--border);margin:12px 0}
+.num-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f0f0ec}
+.num-row:last-child{border-bottom:none}
+/* Teimosinha */
+.teim-box{border:1.5px solid var(--border);border-radius:12px;padding:1.1rem 1.3rem;margin:10px 0;background:var(--bg)}
+.teim-box.gold-border{border-color:var(--gold);border-width:2px}
+/* Jogos salvos */
+.jogo-card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:1.1rem 1.3rem;margin-bottom:1rem}
+.delta{font-size:12px;font-weight:600;padding:2px 8px;border-radius:20px}
+.delta.up{background:#e4f5ea;color:#1a5c27}
+.delta.down{background:#fde8e8;color:#a03030}
+.delta.same{background:#f0f0ec;color:#888}
+/* Aviso */
+.aviso{background:#fffbe6;border:1.5px solid var(--gold);border-radius:var(--radius);padding:10px 14px;font-size:13px;color:#7a5000;margin-bottom:12px;display:none}
+.vazio{text-align:center;padding:2.5rem 1rem;color:#bbb;font-size:14px;line-height:2.4}
+.nome-input{padding:9px 13px;border-radius:var(--radius);border:1.5px solid var(--border);font-family:'DM Sans',sans-serif;font-size:13px;flex:1;min-width:160px;background:var(--surface);color:var(--text)}
+.nome-input:focus{outline:none;border-color:var(--green)}
+.fe-msg{text-align:center;font-family:'Playfair Display',serif;font-size:14px;color:var(--muted);padding:14px 8px 4px;font-style:italic;line-height:1.6}
+/* Resumo teimosinha */
+.teim-resumo{background:linear-gradient(135deg,#f8f4e8,#fef9ec);border:2px solid var(--gold);border-radius:12px;padding:1rem 1.3rem;margin-bottom:14px}
+.teim-resumo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-top:8px}
+.teim-item{text-align:center;padding:8px;background:rgba(255,255,255,.6);border-radius:8px}
+.teim-item-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.teim-item-val{font-size:18px;font-weight:700;color:var(--green)}
+.teim-item-sub{font-size:10px;color:var(--muted);margin-top:2px}
+.legenda{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:10px 0;align-items:center}
+.leg{display:flex;align-items:center;gap:5px}
+.leg-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;border:2px solid transparent}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>🙏 Lotofácil com Fé</h1>
+  <p class="sub" id="statusLine">Carregando dados dos últimos concursos...</p>
+  <div id="avisoNovos" class="aviso"></div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('teimosinha',this)">🔁 Teimosinha</button>
+    <button class="tab" onclick="showTab('meusjogos',this)">📁 Meus jogos</button>
+    <button class="tab" onclick="showTab('tendencias',this)">📈 Tendências</button>
+    <button class="tab" onclick="showTab('atraso',this)">⏳ Atraso</button>
+  </div>
+
+  <!-- TEIMOSINHA -->
+  <div id="tab-teimosinha" class="sec active">
+    <div class="card" style="border-color:var(--gold);border-width:2px">
+      <div class="ct">✨ Monte sua teimosinha</div>
+      <div class="csub">Defina quanto quer gastar <strong>no total</strong> e por quantos sorteios quer teimar. O app calcula quantas apostas cabem por sorteio e gera os jogos com estatística + toque de Deus.</div>
+
+      <div class="ir">
+        <label>Orçamento total</label>
+        <input type="range" id="orcamento" min="7" max="50" value="35" step="3.50" oninput="updateTeim()">
+        <span class="vd" id="orcD">R$ 35,00</span>
+      </div>
+      <div class="ir">
+        <label>Número de sorteios</label>
+        <input type="range" id="sorteios" min="2" max="15" value="10" step="1" oninput="updateTeim()">
+        <span class="vd" id="sortD">10</span>
+      </div>
+
+      <!-- Resumo calculado -->
+      <div id="teimResumo" class="teim-resumo" style="display:none">
+        <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Resumo da teimosinha</div>
+        <div class="teim-resumo-grid" id="teimGrid"></div>
+      </div>
+
+      <div id="teimAlerta" style="font-size:13px;color:#a03030;margin-bottom:8px;display:none"></div>
+
+      <div class="btn-row">
+        <button class="btn god" onclick="gerarTeimosinha()">🙏 Revelar minha teimosinha</button>
+        <button class="btn" onclick="document.getElementById('rTeim').innerHTML=''">Limpar</button>
+      </div>
+    </div>
+    <div id="rTeim"></div>
+  </div>
+
+  <!-- MEUS JOGOS -->
+  <div id="tab-meusjogos" class="sec">
+    <div class="card">
+      <div class="ct">Monte seu jogo manualmente</div>
+      <div class="csub">Selecione 15 números, salve com um nome e volte quando quiser. A cada abertura com internet os jogos são reanalisados automaticamente.</div>
+      <div class="bg" id="seletorBalls"></div>
+      <div id="seletorInfo" style="font-size:13px;color:var(--muted);margin-top:10px">Selecione 15 números</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap">
+        <input type="text" class="nome-input" id="nomeJogo" placeholder="Nome (ex: Meu palpite A)" maxlength="30">
+        <button class="btn pri" onclick="salvarJogo()">💾 Salvar</button>
+        <button class="btn" onclick="limparSelecao()">Limpar</button>
+      </div>
+    </div>
+    <div id="listaJogos"></div>
+  </div>
+
+  <!-- TENDÊNCIAS -->
+  <div id="tab-tendencias" class="sec">
+    <div class="metrics" id="metricsTend"></div>
+    <div class="card"><div class="ct">🔥 Em alta</div><div class="csub">Acima da média nos últimos 20 concursos</div><div class="bg" id="bAlta"></div></div>
+    <div class="card"><div class="ct">⚪ Ciclo regular</div><div class="bg" id="bMedio"></div></div>
+    <div class="card"><div class="ct">🧊 Em baixa — candidatos de retorno</div><div class="bg" id="bBaixa"></div></div>
+  </div>
+
+  <!-- ATRASO -->
+  <div id="tab-atraso" class="sec">
+    <div class="card">
+      <div class="ct">Números por atraso</div>
+      <div class="csub">Quanto mais concursos sem aparecer, mais o número está "devendo" voltar</div>
+      <div id="listaAtraso"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Constantes ────────────────────────────────────────────────
+const PRECO_JOGO = 3.50; // preço atual da aposta simples de 15 dezenas
+
+// ── Estado ────────────────────────────────────────────────────
+let CC=[], FT={}, FR={}, AT={}, SEL=new Set(), JOGOS=[], ULTIMO=0;
+
+// ── Utils ─────────────────────────────────────────────────────
+const n2 = n => String(n).padStart(2,'0');
+const hoje = () => new Date().toLocaleDateString('pt-BR');
+const brl = v => 'R$ ' + v.toFixed(2).replace('.',',');
+const emb = a => { let b=[...a]; for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]} return b; };
+const T25 = () => Array.from({length:25},(_,i)=>i+1);
+
+function showTab(id,el){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  el.classList.add('active');
+}
+
+// ── Storage ───────────────────────────────────────────────────
+function loadStorage(){ try{ const j=localStorage.getItem('lf_jogos4'); if(j) JOGOS=JSON.parse(j); }catch(e){ JOGOS=[]; } }
+function saveStorage(){ localStorage.setItem('lf_jogos4', JSON.stringify(JOGOS)); }
+
+// ── Carregar dados ────────────────────────────────────────────
+async function init(){
+  loadStorage();
+  let ok = false;
+  const apis = [
+    n => `https://loteriascaixa-api.herokuapp.com/api/lotofacil/${n||'latest'}`,
+    n => `https://servicebus2.caixa.gov.br/portaldeloterias/api/lotofacil/${n||''}`
+  ];
+  for(const api of apis){
+    try{
+      const r = await fetch(api(''));
+      if(!r.ok) continue;
+      const d = await r.json();
+      const num = d.concurso||d.numero||0;
+      if(!num) continue;
+      ULTIMO = num;
+      const ps = [];
+      for(let i=num-79;i<=num;i++) ps.push(fOne(i,api));
+      const res = await Promise.allSettled(ps);
+      res.forEach(r=>{ if(r.status==='fulfilled'&&r.value) CC.push(r.value); });
+      if(CC.length>20){ ok=true; break; }
+    }catch(e){}
+  }
+  if(!ok){
+    fallback();
+    document.getElementById('statusLine').textContent = '⚠️ Offline — abra com internet para dados em tempo real';
+  } else {
+    document.getElementById('statusLine').textContent = `✅ ${CC.length} concursos carregados · Último: #${ULTIMO} · Preço da aposta: ${brl(PRECO_JOGO)}`;
+    const ant = parseInt(localStorage.getItem('lf_ant4')||'0');
+    if(ant && ULTIMO>ant){
+      const dif = ULTIMO-ant;
+      const av = document.getElementById('avisoNovos');
+      av.style.display='block';
+      av.innerHTML=`🔄 <strong>${dif} novo${dif>1?'s':''} concurso${dif>1?'s':''}</strong> desde sua última visita (#${ant}→#${ULTIMO}). Seus jogos foram reanalisados automaticamente.`;
+    }
+    localStorage.setItem('lf_ant4', ULTIMO);
+  }
+  saveStorage();
+  calcular();
+  renderTend(); renderAtraso(); renderSeletor(); updateTeim(); renderJogos();
+}
+
+async function fOne(num,api){
+  try{
+    const r = await fetch(api(num));
+    if(!r.ok) return null;
+    const d = await r.json();
+    const dez = xDez(d);
+    if(dez.length!==15) return null;
+    return { num: d.concurso||num, dezenas: dez };
+  }catch{ return null; }
+}
+
+function xDez(d){
+  if(d.dezenas) return d.dezenas.map(Number);
+  if(d.listaDezenas) return d.listaDezenas.map(Number);
+  if(d.dezenasSorteadasOrdemSorteio) return d.dezenasSorteadasOrdemSorteio.map(Number);
+  return [];
+}
+
+function fallback(){
+  ULTIMO = 3620;
+  const p=[
+    [1,3,5,7,8,10,12,14,16,18,20,21,23,24,25],
+    [2,4,6,8,9,11,13,15,17,19,20,22,23,24,25],
+    [1,2,5,7,10,11,14,16,18,20,21,22,23,24,25],
+    [3,4,6,8,9,12,13,15,17,19,20,21,22,24,25],
+    [1,2,4,7,9,10,13,15,16,18,20,21,23,24,25]
+  ];
+  for(let c=3540;c<=3620;c++)
+    CC.push({num:c, dezenas:emb([...p[c%5]]).slice(0,15).sort((a,b)=>a-b)});
+}
+
+// ── Estatísticas ──────────────────────────────────────────────
+function calcular(){
+  for(let i=1;i<=25;i++){ FT[i]=0; FR[i]=0; AT[i]=0; }
+  const rec = CC.slice(-20);
+  CC.forEach(c => c.dezenas.forEach(n=>{ if(FT[n]!==undefined) FT[n]++; }));
+  rec.forEach(c => c.dezenas.forEach(n=>{ if(FR[n]!==undefined) FR[n]++; }));
+  for(let n=1;n<=25;n++){
+    let a=0;
+    for(let i=CC.length-1;i>=0;i--){ if(CC[i].dezenas.includes(n)) break; a++; }
+    AT[n]=a;
+  }
+}
+
+function notaNum(n){
+  const r = FR[n]/20;
+  const t = CC.length>0 ? FT[n]/CC.length : 0;
+  const a = Math.min(AT[n]/8, 1);
+  return r*0.45 + t*0.30 + a*0.25;
+}
+
+function rankNums(){
+  return T25().map(n=>({n, nota:notaNum(n), fr:FR[n], at:AT[n]})).sort((a,b)=>b.nota-a.nota);
+}
+
+// ── Cálculo da teimosinha ─────────────────────────────────────
+// Lógica clara:
+// - Orçamento total / nº de sorteios = verba por sorteio
+// - verba por sorteio / 3,50 = quantidade de apostas por sorteio (arredondado para baixo)
+// - gasto real por sorteio = apostas × 3,50
+// - gasto real total = gasto real por sorteio × nº de sorteios
+
+function calcTeim(orc, sort){
+  const verbaPorSorteio = orc / sort;
+  const apostasPorSorteio = Math.max(1, Math.floor(verbaPorSorteio / PRECO_JOGO));
+  const gastoPorSorteio = apostasPorSorteio * PRECO_JOGO;
+  const gastoTotal = gastoPorSorteio * sort;
+  const sobraTotal = orc - gastoTotal;
+  return { verbaPorSorteio, apostasPorSorteio, gastoPorSorteio, gastoTotal, sobraTotal };
+}
+
+function updateTeim(){
+  const orc = parseFloat(document.getElementById('orcamento').value);
+  const sort = parseInt(document.getElementById('sorteios').value);
+
+  // Arredondar orçamento para múltiplo de 3,50 mais próximo
+  const orcArred = Math.round(orc / PRECO_JOGO) * PRECO_JOGO;
+  document.getElementById('orcD').textContent = brl(orcArred);
+  document.getElementById('sortD').textContent = sort + (sort===1?' sorteio':' sorteios');
+
+  const { apostasPorSorteio, gastoPorSorteio, gastoTotal, sobraTotal } = calcTeim(orcArred, sort);
+
+  document.getElementById('teimResumo').style.display = '';
+  document.getElementById('teimGrid').innerHTML = `
+    <div class="teim-item">
+      <div class="teim-item-label">Apostas/sorteio</div>
+      <div class="teim-item-val">${apostasPorSorteio}</div>
+      <div class="teim-item-sub">${brl(gastoPorSorteio)}/sorteio</div>
+    </div>
+    <div class="teim-item">
+      <div class="teim-item-label">Nº de sorteios</div>
+      <div class="teim-item-val">${sort}</div>
+      <div class="teim-item-sub">teimosinha</div>
+    </div>
+    <div class="teim-item">
+      <div class="teim-item-label">Gasto total</div>
+      <div class="teim-item-val" style="color:var(--green)">${brl(gastoTotal)}</div>
+      <div class="teim-item-sub">${apostasPorSorteio}×${brl(PRECO_JOGO)}×${sort}</div>
+    </div>
+    <div class="teim-item">
+      <div class="teim-item-label">Troco</div>
+      <div class="teim-item-val" style="font-size:16px;color:var(--muted)">${brl(sobraTotal)}</div>
+      <div class="teim-item-sub">sobra do orçamento</div>
+    </div>
+  `;
+
+  const alerta = document.getElementById('teimAlerta');
+  if(gastoTotal > 50){
+    alerta.style.display='';
+    alerta.textContent = `⚠️ Total ultrapassa R$ 50,00. Reduza os sorteios ou o orçamento.`;
+  } else {
+    alerta.style.display='none';
+  }
+}
+
+// ── Toque de Deus ─────────────────────────────────────────────
+function toqueDeDeusNums(){
+  const rank = rankNums();
+  const top10 = rank.slice(0,10).map(x=>x.n);
+  const restante = rank.slice(10);
+
+  // Roleta ponderada pelo atraso — quanto mais tempo sem aparecer, mais chance de ser escolhido
+  const pesos = restante.map(x=>({ n:x.n, peso: Math.pow(x.at+1, 1.8) + x.nota*2 }));
+  const totalPeso = pesos.reduce((s,x)=>s+x.peso, 0);
+
+  const abencados = [];
+  let tent=0;
+  while(abencados.length<3 && tent++<200){
+    let rv = Math.random()*totalPeso, ac=0;
+    for(const p of pesos){
+      ac+=p.peso;
+      if(rv<=ac && !abencados.includes(p.n)){ abencados.push(p.n); break; }
+    }
+  }
+
+  // Pool: 9 favoritos + 3 abençoados
+  let pool = [...new Set([...top10.slice(0,9), ...abencados])];
+  const extras = rank.filter(x=>!pool.includes(x.n)).map(x=>x.n);
+  while(pool.length < 20) pool.push(extras.shift());
+
+  return { nums: forcarEquilibrio(pool, 15, abencados), abencados };
+}
+
+function forcarEquilibrio(pool, qtd, godNums=[]){
+  const rank = rankNums();
+  let d = [...new Set(pool)];
+  const extras = emb(rank.filter(x=>!d.includes(x.n)).map(x=>x.n));
+  while(d.length < qtd) d.push(extras.shift());
+  d = d.slice(0, qtd);
+
+  // Pares/ímpares — alvo: 7 pares para 15 dezenas
+  const alvo = Math.round(qtd * 0.467);
+  let pares = d.filter(n=>n%2===0).length;
+  const byNota = (par) => d.filter(n=>(n%2===0)===par && !godNums.includes(n)).sort((a,b)=>notaNum(a)-notaNum(b));
+  const T = rank.map(x=>x.n);
+
+  for(let t=0; t<15&&pares>alvo+1; t++){
+    const rm = byNota(true)[0];
+    const add = T.find(n=>n%2!==0 && !d.includes(n));
+    if(!rm||!add) break;
+    d=d.filter(n=>n!==rm); d.push(add); pares--;
+  }
+  for(let t=0; t<15&&pares<alvo-1; t++){
+    const rm = byNota(false)[0];
+    const add = T.find(n=>n%2===0 && !d.includes(n));
+    if(!rm||!add) break;
+    d=d.filter(n=>n!==rm); d.push(add); pares++;
+  }
+
+  // Faixas mínimas
+  const addFx = (fn, min) => {
+    if(d.filter(fn).length >= min) return;
+    const cands = T.filter(n=>fn(n)&&!d.includes(n));
+    for(const c of cands){
+      if(d.filter(fn).length >= min) break;
+      const rm = d.filter(n=>!fn(n)&&!godNums.includes(n)).sort((a,b)=>notaNum(a)-notaNum(b))[0];
+      if(rm){ d=d.filter(n=>n!==rm); d.push(c); }
+    }
+  };
+  addFx(n=>n<=10, 2);
+  addFx(n=>n>10&&n<=20, 4);
+  addFx(n=>n>=21, 1);
+
+  return [...new Set(d)].slice(0,qtd).sort((a,b)=>a-b);
+}
+
+// ── Frases espirituais ────────────────────────────────────────
+const FRASES = [
+  "O Senhor guia os passos do fiel. Esses números foram revelados além da lógica.",
+  "Com fé, até o improvável se torna possível. Confie no processo e persevere.",
+  "A persistência é a oração do jogador paciente. A teimosinha é um ato de fé.",
+  "Os números abençoados foram escolhidos no campo onde a razão não alcança.",
+  "Não é sobre sorte — é sobre estar no lugar certo na hora certa. A fé te coloca lá.",
+  "Deus não joga dados, mas às vezes Ele sorri para quem persevera com fé.",
+  "Esses números têm uma energia especial neste momento. Sinta-os e confie.",
+  "A teimosinha dá tempo para os números maturarem. Continue crendo.",
+  "Cada sorteio é uma nova oportunidade. Sua fé é a constante que não muda.",
+];
+
+// ── Gerar teimosinha ──────────────────────────────────────────
+function gerarTeimosinha(){
+  const orc = parseFloat(document.getElementById('orcamento').value);
+  const sort = parseInt(document.getElementById('sorteios').value);
+  const orcArred = Math.round(orc / PRECO_JOGO) * PRECO_JOGO;
+
+  const { apostasPorSorteio, gastoPorSorteio, gastoTotal } = calcTeim(orcArred, sort);
+
+  // Gerar jogos únicos
+  const jogos = [];
+  const gerados = new Set();
+  for(let i=0; i<apostasPorSorteio; i++){
+    let resultado, tent=0;
+    do{
+      resultado = toqueDeDeusNums();
+      tent++;
+    }while(gerados.has(resultado.nums.join(',')) && tent<60);
+    gerados.add(resultado.nums.join(','));
+    jogos.push(resultado);
+  }
+
+  const frase = FRASES[Math.floor(Math.random()*FRASES.length)];
+  const rank = rankNums();
+  const top8 = new Set(rank.slice(0,8).map(x=>x.n));
+
+  let h = `<div class="card" style="border:2px solid var(--gold)">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:18px;margin-bottom:3px">✨ Teimosinha gerada</div>
+        <div style="font-size:12px;color:var(--muted)">
+          ${apostasPorSorteio} jogo${apostasPorSorteio>1?'s':''} por sorteio · ${sort} sorteios · ${brl(gastoTotal)} total
+        </div>
+      </div>
+      <span class="badge bg-y" style="font-size:12px;padding:5px 12px">${brl(gastoPorSorteio)}/sorteio</span>
+    </div>
+
+    <div style="background:#f8f4ec;border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:12px;color:#555;line-height:1.8">
+      <strong>Como jogar:</strong> leve ${apostasPorSorteio===1?'este jogo':'estes jogos'} ao ponto lotérico e peça <strong>teimosinha por ${sort} concursos</strong>.
+      Você pagará ${brl(gastoTotal)} de uma vez e o mesmo jogo será registrado nos próximos ${sort} sorteios automaticamente.
+    </div>`;
+
+  jogos.forEach((jogo, gi)=>{
+    const {nums, abencados} = jogo;
+    const pares = nums.filter(n=>n%2===0).length;
+    const atrasados = nums.filter(n=>AT[n]>=5);
+    const quentes = nums.filter(n=>top8.has(n));
+
+    let bolas = '';
+    nums.forEach((n,bi)=>{
+      const isGod = abencados.includes(n);
+      const isHot = top8.has(n) && !isGod;
+      const isDue = AT[n]>=5 && !isGod;
+      const cls = isGod?'b-god': isHot?'b-hot': isDue?'b-due':'b-neu';
+      const tip = isGod?`✨ Toque de Deus (atrasado ${AT[n]}x)`: isHot?'🔥 Quente': isDue?`⏳ Atrasado ${AT[n]}x`:'Regular';
+      bolas += `<div class="ball b-sm ${cls} reveal" style="animation-delay:${bi*55}ms" title="${tip}">${n2(n)}</div>`;
+    });
+
+    h += `<div class="teim-box${apostasPorSorteio===1?' gold-border':''}">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px">
+        <div>
+          <div style="font-size:13px;font-weight:700">${apostasPorSorteio>1?`Jogo ${gi+1} de ${apostasPorSorteio}`:'Seu jogo'}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:1px">Repita nos próximos ${sort} sorteios</div>
+        </div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
+          <span class="badge bg-y">✨ ${abencados.length} abençoado${abencados.length>1?'s':''}</span>
+          <span class="badge bg-g">🔥 ${quentes.length} quente${quentes.length>1?'s':''}</span>
+          ${atrasados.length?`<span class="badge bg-p">⏳ ${atrasados.length} atrasado${atrasados.length>1?'s':''}</span>`:''}
+        </div>
+      </div>
+      <div class="bg">${bolas}</div>
+      <div class="tag-row">
+        <span class="tag">${pares} pares / ${15-pares} ímpares</span>
+        <span class="tag">1–10: ${nums.filter(n=>n<=10).length}</span>
+        <span class="tag">11–20: ${nums.filter(n=>n>10&&n<=20).length}</span>
+        <span class="tag">21–25: ${nums.filter(n=>n>20).length}</span>
+      </div>
+    </div>`;
+  });
+
+  h += `<div class="legenda" style="padding-top:12px;border-top:1.5px solid var(--border);margin-top:14px">
+    <span class="leg"><span class="leg-dot" style="background:#fef3b0;border-color:var(--gold)"></span>✨ Toque de Deus</span>
+    <span class="leg"><span class="leg-dot" style="background:var(--orange-light);border-color:#f0825a"></span>🔥 Quente</span>
+    <span class="leg"><span class="leg-dot" style="background:var(--purple-light);border-color:#a07ad0"></span>⏳ Atrasado</span>
+    <span class="leg"><span class="leg-dot" style="background:#eee;border-color:#ccc"></span>Regular</span>
+  </div>
+  <div class="fe-msg">"${frase}"</div>
+  </div>`;
+
+  document.getElementById('rTeim').innerHTML = h;
+}
+
+// ── Meus jogos ────────────────────────────────────────────────
+function calcScore(nums){
+  const rank = rankNums();
+  const top8 = new Set(rank.slice(0,8).map(x=>x.n));
+  const q = nums.filter(n=>top8.has(n));
+  const at = nums.filter(n=>AT[n]>=5);
+  const par = nums.filter(n=>n%2===0).length;
+  const f1=nums.filter(n=>n<=10).length, f2=nums.filter(n=>n>10&&n<=20).length, f3=nums.filter(n=>n>20).length;
+  let s=0;
+  s += Math.round((q.length/8)*35);
+  s += (at.length>=1&&at.length<=4)?20 : at.length===0?10 : 5;
+  s += (par>=6&&par<=9)?20 : (par>=5&&par<=10)?12 : 0;
+  s += (f1>=2&&f2>=4&&f3>=1)?25 : (f1>=1&&f3>=1)?15 : 5;
+  return Math.min(s,100);
+}
+const sTxt = s => s>=80?'Excelente':s>=65?'Muito bom':s>=50?'Bom':s>=35?'Regular':'Fraco';
+const sCor = s => s>=80?'#1a5c36':s>=65?'#0d47a1':s>=50?'#c0440c':'#a03030';
+const sBdg = s => s>=80?'bg-g':s>=65?'':s>=50?'bg-a':'bg-r';
+
+function renderSeletor(){
+  let h='';
+  for(let n=1;n<=25;n++) h+=`<div class="ball b-neu click" id="sel-${n}" onclick="toggleNum(${n})">${n2(n)}</div>`;
+  document.getElementById('seletorBalls').innerHTML=h;
+}
+function toggleNum(n){
+  if(SEL.has(n)){ SEL.delete(n); document.getElementById('sel-'+n).className='ball b-neu click'; }
+  else if(SEL.size<15){ SEL.add(n); document.getElementById('sel-'+n).className='ball b-sel click'; }
+  const sz=SEL.size;
+  document.getElementById('seletorInfo').textContent = sz===0?'Selecione 15 números':sz===15?'✅ 15 números — agora salve':`${sz} de 15 selecionados`;
+}
+function limparSelecao(){ SEL.forEach(n=>document.getElementById('sel-'+n).className='ball b-neu click'); SEL.clear(); document.getElementById('seletorInfo').textContent='Selecione 15 números'; }
+
+function salvarJogo(){
+  if(SEL.size!==15){ alert('Selecione exatamente 15 números.'); return; }
+  const nome = document.getElementById('nomeJogo').value.trim()||`Jogo ${JOGOS.length+1}`;
+  const nums = [...SEL].sort((a,b)=>a-b);
+  const s = calcScore(nums);
+  JOGOS.unshift({id:Date.now(), nome, nums, criado:hoje(), concursoCriado:ULTIMO, scoreInicial:s, scoreAtual:s});
+  saveStorage(); limparSelecao(); document.getElementById('nomeJogo').value=''; renderJogos();
+}
+function excluirJogo(id){ if(!confirm('Excluir este jogo?')) return; JOGOS=JOGOS.filter(j=>j.id!==id); saveStorage(); renderJogos(); }
+
+function renderJogos(){
+  const cont = document.getElementById('listaJogos');
+  if(!JOGOS.length){ cont.innerHTML='<div class="vazio">Nenhum jogo salvo ainda.<br>Monte acima e salve.<br><small style="color:#ddd">Jogos ficam salvos neste navegador.</small></div>'; return; }
+  JOGOS.forEach(j=>{ j.scoreAtual=calcScore(j.nums); });
+  saveStorage();
+  const rank = rankNums();
+  const top8 = new Set(rank.slice(0,8).map(x=>x.n));
+  let h = `<div style="font-size:13px;color:var(--muted);margin-bottom:10px">${JOGOS.length} jogo${JOGOS.length>1?'s':''} salvo${JOGOS.length>1?'s':''} · reanalisados com concurso #${ULTIMO}</div>`;
+  JOGOS.forEach(j=>{
+    const diff = j.scoreAtual-j.scoreInicial;
+    const dcls = diff>0?'up':diff<0?'down':'same';
+    const emoji = diff>0?'📈':diff<0?'📉':'➡️';
+    const desde = ULTIMO-j.concursoCriado;
+    const par = j.nums.filter(n=>n%2===0).length;
+    const f1=j.nums.filter(n=>n<=10).length, f2=j.nums.filter(n=>n>10&&n<=20).length, f3=j.nums.filter(n=>n>20).length;
+    const qts=j.nums.filter(n=>top8.has(n)).length;
+    const ats=j.nums.filter(n=>AT[n]>=5).length;
+    let bolas='';
+    j.nums.forEach(n=>{ const cls=top8.has(n)?'b-hot':AT[n]>=5?'b-due':'b-neu'; bolas+=`<div class="ball b-sm ${cls}" title="${top8.has(n)?'🔥 Quente':AT[n]>=5?`⏳ ${AT[n]}x`:'Regular'}">${n2(n)}</div>`; });
+    h += `<div class="jogo-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+        <div>
+          <div style="font-size:14px;font-weight:700">${j.nome}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">Criado ${j.criado}${desde>0?` · <strong>${desde} concurso${desde>1?'s':''} depois</strong>`:' · recém criado'}</div>
+        </div>
+        <button class="btn del" onclick="excluirJogo(${j.id})">✕ Excluir</button>
+      </div>
+      <div class="bg">${bolas}</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap">
+        <span class="badge" style="background:${j.scoreAtual>=80?'#e4f5ea':j.scoreAtual>=50?'#fff3ed':'#fde8e8'};color:${sCor(j.scoreAtual)}">${sTxt(j.scoreAtual)} · ${j.scoreAtual}/100</span>
+        <span class="delta ${dcls}">${emoji} ${diff>0?'+':''}${diff} pts</span>
+        <span style="font-size:11px;color:var(--muted)">🔥 ${qts} quentes · ⏳ ${ats} atrasados</span>
+      </div>
+      <div class="score-bar"><div class="score-fill" style="width:${j.scoreAtual}%;background:${sCor(j.scoreAtual)}"></div></div>
+      <div class="tag-row">
+        <span class="tag">${par} pares / ${15-par} ímpares</span>
+        <span class="tag">1–10: ${f1}</span><span class="tag">11–20: ${f2}</span><span class="tag">21–25: ${f3}</span>
+      </div>
+    </div>`;
+  });
+  cont.innerHTML=h;
+}
+
+// ── Tendências ────────────────────────────────────────────────
+function renderTend(){
+  const sc = Array.from({length:25},(_,i)=>({n:i+1,r:FR[i+1]})).sort((a,b)=>b.r-a.r);
+  const alta=sc.slice(0,8), baixa=sc.slice(-7);
+  const aS=new Set(alta.map(x=>x.n)), bS=new Set(baixa.map(x=>x.n));
+  const medio=sc.filter(x=>!aS.has(x.n)&&!bS.has(x.n));
+  document.getElementById('metricsTend').innerHTML=`
+    <div class="metric"><div class="ml">Concursos analisados</div><div class="mv">${CC.length}</div></div>
+    <div class="metric"><div class="ml">Em alta agora</div><div class="mv">${alta.length}</div></div>
+    <div class="metric"><div class="ml">Maior atraso</div><div class="mv">${Math.max(...Object.values(AT))}</div><div class="msub">concursos</div></div>
+    <div class="metric"><div class="ml">Devendo (≥5)</div><div class="mv">${Object.values(AT).filter(v=>v>=5).length}</div></div>`;
+  document.getElementById('bAlta').innerHTML=alta.map(x=>`<div class="ball b-hot" title="${x.r}x nos últimos 20">${n2(x.n)}<br><small style="font-size:9px">${x.r}×</small></div>`).join('');
+  document.getElementById('bMedio').innerHTML=medio.map(x=>`<div class="ball b-neu">${n2(x.n)}</div>`).join('');
+  document.getElementById('bBaixa').innerHTML=baixa.map(x=>`<div class="ball b-cold">${n2(x.n)}</div>`).join('');
+}
+
+// ── Atraso ────────────────────────────────────────────────────
+function renderAtraso(){
+  const sorted = Array.from({length:25},(_,i)=>({n:i+1,a:AT[i+1]})).sort((a,b)=>b.a-a.a);
+  const maxA = sorted[0]?.a||1;
+  let h='';
+  sorted.forEach(({n,a})=>{
+    const pct = Math.round((a/maxA)*100);
+    const cor = a>=8?'#c0392b': a>=5?'#5b2d8e': a>=3?'#c0440c':'#1a5c36';
+    const badge = a>=8?'<span class="badge bg-r">devendo muito</span>':
+                  a>=5?'<span class="badge bg-p">devendo</span>':
+                  a>=3?'<span class="badge bg-a">regular</span>':
+                  '<span class="badge bg-g">ativo</span>';
+    const bcls = a>=8?'b-warn': a>=5?'b-due': a>=3?'b-neu':'b-hot';
+    h+=`<div class="num-row">
+      <div class="ball b-xs ${bcls}">${n2(n)}</div>
+      <div style="min-width:26px;font-size:13px;font-weight:700">${n2(n)}</div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:${cor}"></div></div>
+      <div style="font-size:12px;color:var(--muted);min-width:150px">${a} concurso${a!==1?'s':''} sem aparecer</div>
+      ${badge}
+    </div>`;
+  });
+  document.getElementById('listaAtraso').innerHTML=h;
+}
+
+init();
+</script>
+</body>
+</html>
